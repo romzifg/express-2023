@@ -3,11 +3,9 @@ const router = express.Router();
 const categoryController = require('../controllers/categoryController')
 
 router.get('/', categoryController.getAllCategories)
+router.get('/:id', categoryController.getCategoryById)
 router.post('/', categoryController.storeCategory)
-router.get('/:name', (req, res) => {
-    res.json({
-        message: `${req.params.name}`
-    })
-})
+router.put('/:id', categoryController.updateCategory)
+router.delete('/:id', categoryController.destroyCategory)
 
 module.exports = router

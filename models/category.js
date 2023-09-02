@@ -23,8 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.TEXT
   }, {
     hooks: {
-      beforeValidate: (category, options) => {
-        category.name = category.name.toLowerCase()
+      afterValidate: (category, options) => {
+        if (category.name) {
+          category.name = category.name.toLowerCase()
+        }
       }
     },
     sequelize,
