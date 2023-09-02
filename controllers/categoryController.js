@@ -1,3 +1,5 @@
+const { Category } = require('../models');
+
 module.exports = {
     getAllCategories: async (req, res) => {
         res.status(200).json({
@@ -18,21 +20,23 @@ module.exports = {
     },
 
     storeCategory: async (req, res) => {
-        let name = req.body.name
-        let description = req.body.description
+        try {
+            let { name, description } = req.body
 
-        if (!name && !description) {
+            const newCategory = await Category.create(
+                { name, description }
+            )
+
+            return res.status(201).json({
+                status: 'Success',
+                data: newCategory
+            })
+
+        } catch (error) {
             return res.status(400).json({
-                error: true,
-                status: 'fail',
-                message: "name and description is empty"
+                status: 'Fail',
+                error
             })
         }
-
-        return res.status(200).json({
-            error: false,
-            status: 'success',
-            message: `Name: ${name}, Description: ${description}`
-        })
     }
 }
