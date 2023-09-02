@@ -3,17 +3,18 @@ const { User } = require('../models')
 module.exports = {
     register: async (req, res) => {
         try {
-            const { name, email, password, passwordConfirm } = req.body
-
-            if (password !== passwordConfirm) {
+            if (req.body.password !== req.body.passwordConfirm) {
                 return res.status(400).json({
                     status: 'Fail',
-                    message: 'password is not match'
+                    message: 'Validation Error',
+                    error: ['password is not match']
                 })
             }
 
             const user = await User.create({
-                name, email, password
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password
             })
 
             delete user.password
@@ -25,7 +26,7 @@ module.exports = {
             console.log(error)
             return res.status(400).json({
                 status: 'Fail',
-                error
+                error: error.errors.map(err => err.message)
             })
         }
     }
