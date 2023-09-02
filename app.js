@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const CategoriesRouter = require('./routes/categories');
+const AuthRouter = require('./routes/auth');
 const morgan = require('morgan');
 const cors = require('cors');
 require('dotenv').config()
@@ -11,6 +12,7 @@ app.use(morgan("dev"))
 app.use(cors())
 
 // Routing
+app.use('/api/v1/auth', AuthRouter)
 app.use('/api/v1/categories', CategoriesRouter)
 
 app.listen(process.env.PORT, () => {
