@@ -1,116 +1,114 @@
 const { Category } = require('../models');
 
-module.exports = {
-    getAllCategories: async (req, res) => {
-        try {
-            const categories = await Category.findAll();
+exports.getAllCategories = async (req, res) => {
+    try {
+        const categories = await Category.findAll();
 
-            return res.status(200).json({
-                status: 'Success',
-                data: categories
-            })
-        } catch (error) {
-            return res.status(400).json({
-                status: 'Fail',
-                error
-            })
-        }
-    },
+        return res.status(200).json({
+            status: 'Success',
+            data: categories
+        })
+    } catch (error) {
+        return res.status(400).json({
+            status: 'Fail',
+            error
+        })
+    }
+}
 
-    getCategoryById: async (req, res) => {
-        try {
-            const categories = await Category.findByPk(req.params.id);
+exports.getCategoryById = async (req, res) => {
+    try {
+        const categories = await Category.findByPk(req.params.id);
 
-            if (!categories) {
-                return res.status(404).json({
-                    status: 'Not Found',
-                    data: null
-                })
-            }
-
-            return res.status(200).json({
-                status: 'Success',
-                data: categories
-            })
-        } catch (error) {
-            return res.status(400).json({
-                status: 'Fail',
-                error
+        if (!categories) {
+            return res.status(404).json({
+                status: 'Not Found',
+                data: null
             })
         }
-    },
 
-    storeCategory: async (req, res) => {
-        try {
-            let { name, description } = req.body
+        return res.status(200).json({
+            status: 'Success',
+            data: categories
+        })
+    } catch (error) {
+        return res.status(400).json({
+            status: 'Fail',
+            error
+        })
+    }
+}
 
-            const newCategory = await Category.create(
-                { name, description }
-            )
+exports.storeCategory = async (req, res) => {
+    try {
+        let { name, description } = req.body
 
-            return res.status(201).json({
-                status: 'Success',
-                data: newCategory
-            })
+        const newCategory = await Category.create(
+            { name, description }
+        )
 
-        } catch (error) {
-            return res.status(400).json({
+        return res.status(201).json({
+            status: 'Success',
+            data: newCategory
+        })
+
+    } catch (error) {
+        return res.status(400).json({
+            status: 'Fail',
+            error
+        })
+    }
+}
+
+exports.updateCategory = async (req, res) => {
+    try {
+        const ctg = await Category.update(req.body, {
+            where: { id: req.params.id }
+        })
+
+        const newCtg = await Category.findByPk(req.params.id)
+
+        if (!newCtg) {
+            return res.status(404).json({
                 status: 'Fail',
-                error
+                message: 'Not Found'
             })
         }
-    },
 
-    updateCategory: async (req, res) => {
-        try {
-            const ctg = await Category.update(req.body, {
-                where: { id: req.params.id }
-            })
+        return res.status(200).json({
+            status: 'Success',
+            data: newCtg
+        })
+    } catch (error) {
+        return res.status(400).json({
+            status: 'Fail',
+            error
+        })
+    }
+}
 
-            const newCtg = await Category.findByPk(req.params.id)
-
-            if (!newCtg) {
-                return res.status(404).json({
-                    status: 'Fail',
-                    message: 'Not Found'
-                })
-            }
-
-            return res.status(200).json({
-                status: 'Success',
-                data: newCtg
-            })
-        } catch (error) {
-            return res.status(400).json({
+exports.destroyCategory = async (req, res) => {
+    try {
+        const ctg = await Category.findByPk(req.params.id)
+        if (!ctg) {
+            return res.status(404).json({
                 status: 'Fail',
-                error
+                message: 'Not Found'
             })
         }
-    },
 
-    destroyCategory: async (req, res) => {
-        try {
-            const ctg = await Category.findByPk(req.params.id)
-            if (!ctg) {
-                return res.status(404).json({
-                    status: 'Fail',
-                    message: 'Not Found'
-                })
-            }
+        await ctg.destroy({
+            where: { id: req.params.id }
+        })
 
-            await ctg.destroy({
-                where: { id: req.params.id }
-            })
-
-            return res.status(200).json({
-                status: 'Success',
-                message: `Success delete category id ${req.params.id} `
-            })
-        } catch (error) {
-            return res.status(400).json({
-                status: 'Fail',
-                error
-            })
-        }
+        return res.status(200).json({
+            status: 'Success',
+            message: `Success delete category id ${req.params.id} `
+        })
+    } catch (error) {
+        return res.status(400).json({
+            status: 'Fail',
+            error
+        })
     }
 }
