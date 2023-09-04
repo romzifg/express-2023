@@ -8,6 +8,26 @@ const signToken = (id) => {
     })
 }
 
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user.id)
+    const cookieOption = {
+        expiresIn: new Date(
+            Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)
+        ),
+        httpOnly: true
+    }
+
+    res.cookie('jwt', token, cookieOption)
+
+    user.password = undefined
+
+    res.status(statusCode).json({
+        status: "Success",
+        token,
+        data: user
+    })
+}
+
 exports.register = async (req, res) => {
     try {
         if (req.body.password !== req.body.passwordConfirm) {
@@ -24,13 +44,7 @@ exports.register = async (req, res) => {
             password: req.body.password
         })
 
-        const token = signToken(user.id);
-
-        return res.status(201).json({
-            status: 'Success',
-            token: token,
-            data: user
-        })
+        createSendToken(user, 201, res)
     } catch (error) {
         console.log(error)
         return res.status(400).json({
@@ -59,13 +73,7 @@ exports.login = async (req, res) => {
             })
         }
 
-        const token = signToken(userData.id);
-
-        return res.status(201).json({
-            status: 'Success',
-            message: 'Login success',
-            token: token,
-        })
+        createSendToken(userData, 200, res)
     } catch (error) {
         console.log(error)
         return res.status(400).json({
