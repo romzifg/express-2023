@@ -5,13 +5,15 @@ exports.getAllCategories = async (req, res) => {
         const categories = await Category.findAll();
 
         return res.status(200).json({
-            status: 'Success',
+            status: 200,
+            message: 'Success',
             data: categories
         })
     } catch (error) {
         return res.status(400).json({
-            status: 'Fail',
-            error
+            status: 400,
+            message: 'Fail',
+            error: error.message
         })
     }
 }
@@ -22,19 +24,22 @@ exports.getCategoryById = async (req, res) => {
 
         if (!categories) {
             return res.status(404).json({
-                status: 'Not Found',
+                status: 404,
+                message: 'Not Found',
                 data: null
             })
         }
 
         return res.status(200).json({
-            status: 'Success',
+            status: 200,
+            message: 'Success',
             data: categories
         })
     } catch (error) {
         return res.status(400).json({
-            status: 'Fail',
-            error
+            status: 400,
+            message: 'Fail',
+            error: error.message
         })
     }
 }
@@ -48,21 +53,23 @@ exports.storeCategory = async (req, res) => {
         )
 
         return res.status(201).json({
-            status: 'Success',
+            status: 201,
+            message: 'Success',
             data: newCategory
         })
 
     } catch (error) {
         return res.status(400).json({
-            status: 'Fail',
-            error
+            status: 400,
+            message: 'Fail',
+            error: error.message
         })
     }
 }
 
 exports.updateCategory = async (req, res) => {
     try {
-        const ctg = await Category.update(req.body, {
+        await Category.update(req.body, {
             where: { id: req.params.id }
         })
 
@@ -70,19 +77,21 @@ exports.updateCategory = async (req, res) => {
 
         if (!newCtg) {
             return res.status(404).json({
-                status: 'Fail',
+                status: 404,
                 message: 'Not Found'
             })
         }
 
         return res.status(200).json({
-            status: 'Success',
+            status: 200,
+            message: 'Success',
             data: newCtg
         })
     } catch (error) {
         return res.status(400).json({
-            status: 'Fail',
-            error
+            status: 400,
+            message: 'Fail',
+            error: error.message
         })
     }
 }
@@ -92,7 +101,7 @@ exports.destroyCategory = async (req, res) => {
         const ctg = await Category.findByPk(req.params.id)
         if (!ctg) {
             return res.status(404).json({
-                status: 'Fail',
+                status: 404,
                 message: 'Not Found'
             })
         }
@@ -102,13 +111,14 @@ exports.destroyCategory = async (req, res) => {
         })
 
         return res.status(200).json({
-            status: 'Success',
-            message: `Success delete category id ${req.params.id} `
+            status: 200,
+            message: `Success delete category id ${req.params.id}`
         })
     } catch (error) {
         return res.status(400).json({
-            status: 'Fail',
-            error
+            status: 400,
+            message: 'Fail',
+            error: error.message
         })
     }
 }

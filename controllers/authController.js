@@ -22,9 +22,10 @@ const createSendToken = (user, statusCode, res) => {
     user.password = undefined
 
     res.status(statusCode).json({
-        status: "Success",
+        status: statusCode,
+        message: 'Success',
         token,
-        data: user
+        user
     })
 }
 
@@ -46,9 +47,9 @@ exports.register = async (req, res) => {
 
         createSendToken(user, 201, res)
     } catch (error) {
-        console.log(error)
         return res.status(400).json({
-            status: 'Fail',
+            status: 400,
+            message: 'Fail',
             error: error.errors.map(err => err.message)
         })
     }
@@ -75,9 +76,10 @@ exports.login = async (req, res) => {
 
         createSendToken(userData, 200, res)
     } catch (error) {
-        console.log(error)
         return res.status(400).json({
-            status: 'Fail',
+            status: 400,
+            message: 'Fail',
+            error: error.message
         })
 
     }
