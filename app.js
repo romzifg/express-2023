@@ -4,11 +4,13 @@ const CategoriesRouter = require('./routes/categories');
 const AuthRouter = require('./routes/auth');
 const morgan = require('morgan');
 const cors = require('cors');
+const cookieParse = require('cookie-parser');
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
 require('dotenv').config()
 
 // Middleware
 app.use(express.json())
+app.use(cookieParse())
 app.use(morgan("dev"))
 app.use(cors())
 

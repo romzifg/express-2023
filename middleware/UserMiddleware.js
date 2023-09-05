@@ -4,9 +4,9 @@ require('dotenv').config()
 
 exports.authMiddleware = async (req, res, next) => {
     let token
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(" ")[1]
-    }
+
+    // Set token to cookies
+    token = req.cookies.jwt
 
     if (!token) {
         return next(res.status(401).json({
