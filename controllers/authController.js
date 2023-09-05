@@ -95,3 +95,25 @@ exports.logoutUser = async (req, res) => {
         message: "User Logout"
     })
 }
+
+exports.getCurrentUser = async (req, res) => {
+    const currentUser = await User.findByPk(req.user.id)
+
+    if (currentUser) {
+        return res.status(200).json({
+            status: 200,
+            message: "Success",
+            user: {
+                id: currentUser.id,
+                name: currentUser.name,
+                email: currentUser.email,
+                role_id: currentUser.role_id
+            }
+        })
+    }
+
+    return res.status(404).json({
+        status: 404,
+        message: "Invalid token"
+    })
+}
