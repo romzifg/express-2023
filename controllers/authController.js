@@ -83,3 +83,15 @@ exports.login = async (req, res) => {
 
     }
 }
+
+exports.logoutUser = async (req, res) => {
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expiresIn: new Date(0)
+    })
+
+    res.status(200).json({
+        status: 200,
+        message: "User Logout"
+    })
+}
