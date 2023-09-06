@@ -10,6 +10,7 @@ require('dotenv').config()
 
 // Middleware
 app.use(express.json())
+app.use(exoress.urlencoded({ extended: true }))
 app.use(cookieParse())
 app.use(morgan("dev"))
 app.use(cors())
