@@ -48,15 +48,14 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: {
           msg: 'category id cannot be empty'
-        }
-      },
-      isInt: true,
-      isExist(value) {
-        return sequelize.models.Category.findByPk(value).then((el) => {
-          if (!el) {
-            throw new Error("Category not found")
-          }
-        })
+        },
+        isExist(value) {
+          return sequelize.models.Category.findByPk(value).then((el) => {
+            if (!el) {
+              throw new Error("Category not found")
+            }
+          })
+        },
       },
     },
     image: {
