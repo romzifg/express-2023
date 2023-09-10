@@ -2,9 +2,8 @@ const express = require('express');
 const router = express.Router();
 const ProductController = require('../controllers/ProductController')
 const { authMiddleware } = require('../middleware/UserMiddleware')
-const multer = require('multer')
-const mulParse = multer()
+const { uploadOption } = require('../utils/fileUpload')
 
-router.post('/', authMiddleware, mulParse.none(), ProductController.addProduct)
+router.post('/', authMiddleware, uploadOption.single('image'), ProductController.addProduct)
 
 module.exports = router
