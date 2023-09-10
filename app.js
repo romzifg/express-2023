@@ -6,6 +6,7 @@ const ProductRouter = require('./routes/product');
 const morgan = require('morgan');
 const cors = require('cors');
 const cookieParse = require('cookie-parser');
+const path = require('path');
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
 require('dotenv').config()
 
@@ -15,6 +16,10 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParse())
 app.use(morgan("dev"))
 app.use(cors())
+
+var dir = path.join(__dirname, 'public');
+app.use('/public', express.static(dir));
+
 
 // Routing
 app.use('/api/v1/auth', AuthRouter)
