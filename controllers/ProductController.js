@@ -26,3 +26,31 @@ exports.addProduct = asyncHandler(async (req, res) => {
         data: newProduct
     })
 })
+
+exports.getProducts = asyncHandler(async (req, res) => {
+    const product = await Product.findAll();
+
+    return res.status(200).json({
+        error: false,
+        status: 'Success',
+        data: product
+    })
+})
+
+exports.getProduct = asyncHandler(async (req, res) => {
+    const product = await Product.findByPk(req.params.id)
+
+    if (!product) {
+        return res.status(404).json({
+            error: true,
+            status: 'Not Found',
+            data: null
+        })
+    }
+
+    return res.status(200).json({
+        error: false,
+        status: 'Success',
+        data: product
+    })
+})
