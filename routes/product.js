@@ -7,5 +7,7 @@ const { uploadOption } = require('../utils/fileUpload')
 router.post('/', authMiddleware, uploadOption.single('image'), ProductController.addProduct)
 router.get('/', authMiddleware, ProductController.getProducts)
 router.get('/:id', authMiddleware, ProductController.getProduct)
+router.put('/:id', authMiddleware, uploadOption.single('image'), ProductController.updateProduct)
+router.delete('/:id', authMiddleware, ProductController.deleteProduct)
 
 module.exports = router
