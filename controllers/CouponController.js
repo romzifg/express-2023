@@ -1,21 +1,21 @@
 const { Coupon } = require('../models');
-const asyncHandler = require('../middleware/asyncHandler')
+const asyncHandler = require('../middleware/asyncHandler');
+const { apiResponse } = require('../utils/response');
 
 exports.getAllCoupons = async (req, res) => {
     try {
         const coupons = await Coupon.findAll()
 
-        return res.status(200).json({
-            status: 200,
+        return apiResponse({
+            statusCode: 200,
             message: 'Success',
             data: coupons
-        })
+        }, res)
     } catch (error) {
-        return res.status(400).json({
-            status: 400,
-            message: 'Fail',
-            error: error.message
-        })
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
     }
 }
 
@@ -23,24 +23,23 @@ exports.getCoupon = async (req, res) => {
     try {
         const coupon = await Coupon.findOne({ where: { id: req.params.id } })
         if (!coupon) {
-            return res.status(404).json({
-                status: 404,
+            return apiResponse({
+                statusCode: 404,
                 message: 'Not Found',
-                data: null
-            })
+                data: null,
+            }, res)
         }
 
-        return res.status(200).json({
-            status: 200,
+        return apiResponse({
+            statusCode: 200,
             message: 'Success',
             data: coupon
-        })
+        }, res)
     } catch (error) {
-        return res.status(400).json({
-            status: 400,
-            message: 'Fail',
-            error: error.message
-        })
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
     }
 }
 
@@ -52,21 +51,21 @@ exports.createCoupon = asyncHandler(async (req, res) => {
         disc_value: req.body.disc_value
     })
 
-    return res.status(200).json({
-        status: 200,
+    return apiResponse({
+        statusCode: 200,
         message: 'Success',
         data: coupon
-    })
+    }, res)
 })
 
 exports.updateCoupon = asyncHandler(async (req, res) => {
     const coupon = await Coupon.findOne({ where: { id: req.params.id } })
     if (!coupon) {
-        return res.status(404).json({
-            status: 404,
+        return apiResponse({
+            statusCode: 404,
             message: 'Not Found',
-            data: null
-        })
+            data: null,
+        }, res)
     }
 
     await coupon.update({
@@ -76,27 +75,28 @@ exports.updateCoupon = asyncHandler(async (req, res) => {
         disc_value: req.body.disc_value
     })
 
-    return res.status(200).json({
-        status: 200,
+    return apiResponse({
+        statusCode: 200,
         message: 'Success',
         data: coupon
-    })
+    }, res)
 })
 
 exports.destroyCoupon = asyncHandler(async (req, res) => {
     const coupon = await Coupon.findOne({ where: { id: req.params.id } })
     if (!coupon) {
-        return res.status(404).json({
-            status: 404,
+        return apiResponse({
+            statusCode: 404,
             message: 'Not Found',
-            error: 'Data Not Found'
-        })
+            data: null,
+        }, res)
     }
 
     await coupon.destroy()
 
-    return res.status(200).json({
-        status: 200,
+    return apiResponse({
+        statusCode: 200,
         message: `Success delete coupon with id ${req.params.id}`,
-    })
+        data: null
+    }, res)
 })

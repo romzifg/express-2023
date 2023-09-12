@@ -1,5 +1,6 @@
 const { User } = require('../models')
 const jwt = require('jsonwebtoken')
+const { apiResponse } = require('../utils/response')
 require('dotenv').config()
 
 const signToken = (id) => {
@@ -21,11 +22,11 @@ const createSendToken = (user, statusCode, res) => {
 
     user.password = undefined
 
-    res.status(statusCode).json({
-        status: statusCode,
+    return apiResponse({
+        statusCode: 200,
         message: 'Success',
-        user
-    })
+        data: user,
+    }, res)
 }
 
 exports.register = async (req, res) => {
@@ -46,31 +47,28 @@ exports.register = async (req, res) => {
 
         createSendToken(user, 201, res)
     } catch (error) {
-        return res.status(400).json({
-            status: 400,
-            message: 'Fail',
-            error: error.errors.map(err => err.message)
-        })
+        return apiResponse({
+            statusCode: 400,
+            message: error.errors.map(err => err.message),
+        }, res)
     }
 }
 
 exports.login = async (req, res) => {
     try {
         if (!req.body.email || !req.body.password) {
-            return res.status(400).json({
-                status: 'Fail',
-                message: 'Error Validation',
-                error: 'Email or Password cannot be empty, please fill it'
-            })
+            return apiResponse({
+                statusCode: 400,
+                message: 'Error Validation, Email or Password cannot be empty',
+            }, res)
         }
 
         const userData = await User.findOne({ where: { email: req.body.email } })
         if (!userData || !(await userData.CorrectPassword(req.body.password, userData.password))) {
-            return res.status(400).json({
-                status: 'Fail',
-                message: 'Error Login',
-                error: 'Invalid Email or Password'
-            })
+            return apiResponse({
+                statusCode: 400,
+                message: 'Invalid Email Or Password',
+            }, res)
         }
 
         createSendToken(userData, 200, res)
@@ -90,30 +88,32 @@ exports.logoutUser = async (req, res) => {
         expiresIn: new Date(0)
     })
 
-    res.status(200).json({
-        status: 200,
-        message: "User Logout"
-    })
+    return apiResponse({
+        statusCode: 200,
+        message: 'User Logout',
+        data: null,
+    }, res)
 }
 
 exports.getCurrentUser = async (req, res) => {
     const currentUser = await User.findByPk(req.user.id)
 
     if (currentUser) {
-        return res.status(200).json({
-            status: 200,
-            message: "Success",
-            user: {
+        return apiResponse({
+            statusCode: 200,
+            message: 'Success',
+            data: {
                 id: currentUser.id,
                 name: currentUser.name,
                 email: currentUser.email,
                 role_id: currentUser.role_id
-            }
-        })
+            },
+        }, res)
     }
 
-    return res.status(404).json({
-        status: 404,
-        message: "Invalid token"
-    })
+    return apiResponse({
+        statusCode: 404,
+        message: 'Not Found, Invalid token',
+        data: null
+    }, res)
 }

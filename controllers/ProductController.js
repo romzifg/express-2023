@@ -1,5 +1,6 @@
 const asyncHandler = require('../middleware/asyncHandler')
-const { Product } = require('../models')
+const { Product } = require('../models');
+const { apiResponse } = require('../utils/response');
 
 exports.addProduct = asyncHandler(async (req, res) => {
     const file = req.file;
@@ -20,54 +21,50 @@ exports.addProduct = asyncHandler(async (req, res) => {
         image: pathFile
     })
 
-    return res.status(200).json({
-        error: false,
-        status: 200,
+    return apiResponse({
+        statusCode: 200,
         message: 'Success',
         data: newProduct
-    })
+    }, res)
 })
 
 exports.getProducts = asyncHandler(async (req, res) => {
     const product = await Product.findAll();
 
-    return res.status(200).json({
-        error: false,
-        status: 'Success',
+    return apiResponse({
+        statusCode: 200,
+        message: 'Success',
         data: product
-    })
+    }, res)
 })
 
 exports.getProduct = asyncHandler(async (req, res) => {
     const product = await Product.findByPk(req.params.id)
 
     if (!product) {
-        return res.status(404).json({
-            error: true,
-            status: 404,
+        return apiResponse({
+            statusCode: 404,
             message: 'Not Found',
             data: null
-        })
+        }, res)
     }
 
-    return res.status(200).json({
-        error: false,
-        status: 200,
+    return apiResponse({
+        statusCode: 200,
         message: 'Success',
         data: product
-    })
+    }, res)
 })
 
 exports.updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findByPk(req.params.id)
 
     if (!product) {
-        return res.status(404).json({
-            error: true,
-            status: 404,
+        return apiResponse({
+            statusCode: 404,
             message: 'Not Found',
             data: null
-        })
+        }, res)
     }
 
     const file = req.file;
@@ -87,30 +84,28 @@ exports.updateProduct = asyncHandler(async (req, res) => {
         image: pathFile
     })
 
-    return res.status(200).json({
-        error: false,
-        status: 200,
+    return apiResponse({
+        statusCode: 200,
         message: 'Success',
         data: newProduct
-    })
+    }, res)
 })
 
 exports.deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findByPk(req.params.id)
     if (!product) {
-        return res.status(404).json({
-            error: true,
-            status: 404,
+        return apiResponse({
+            statusCode: 404,
             message: 'Not Found',
-            data: null
-        })
+            data: product
+        }, res)
     }
 
     await product.destroy()
 
-    return res.status(200).json({
-        error: false,
-        status: 200,
-        message: `Success delete category id ${req.params.id}`
-    })
+    return apiResponse({
+        statusCode: 200,
+        message: `Success delete category id ${req.params.id}`,
+        data: product
+    }, res)
 })

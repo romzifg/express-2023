@@ -21,7 +21,8 @@ exports.errorHandler = (err, req, res, next) => {
     }
 
     res.status(statusCode).json({
-        message,
-        stack: err.stack
+        status: statusCode,
+        error: err.stack,
+        message: message,
     })
 }
