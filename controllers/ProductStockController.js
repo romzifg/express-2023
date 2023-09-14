@@ -68,3 +68,45 @@ exports.createProductStock = asyncHandler(async (req, res) => {
         }, res)
     }
 })
+
+exports.updateStock = asyncHandler(async (req, res) => {
+    const stock = ProductStock.findOne({ where: { id: req.params.id } })
+    if (!stock) {
+        return apiResponse({
+            statusCode: 404,
+            message: 'Not Found',
+            data: null
+        }, res)
+    }
+
+    const newStock = stock.update({
+        current_stock: req.body.current_stock,
+        old_stock: req.body.old_stock,
+        diff_stock: req.body.old_stock - req.body.current_stock
+    })
+
+    return apiResponse({
+        statusCode: 200,
+        message: 'Success',
+        data: newStock
+    }, res)
+})
+
+exports.deleteStock = asyncHandler(async (req, res) => {
+    const stock = ProductStock.findOne({ where: { id: req.params.id } })
+    if (!stock) {
+        return apiResponse({
+            statusCode: 404,
+            message: 'Not Found',
+            data: null
+        }, res)
+    }
+
+    await stock.destroy()
+
+    return apiResponse({
+        statusCode: 200,
+        message: `Success delete stock ${req.params.id}`,
+        data: null
+    }, res)
+})

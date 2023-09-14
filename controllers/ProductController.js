@@ -106,6 +106,6 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
     return apiResponse({
         statusCode: 200,
         message: `Success delete category id ${req.params.id}`,
-        data: product
+        data: null
     }, res)
 })
