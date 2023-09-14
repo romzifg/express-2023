@@ -4,7 +4,7 @@ Rest Api for online shop using Express js and database MySQL.
 
 Clone the project
 ```bash
-  https://github.com/romzifg/express-backend.git
+  git clone https://github.com/romzifg/express-backend.git
 ```
 
 Install package
