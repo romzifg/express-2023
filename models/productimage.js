@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      ProductImage.belongsTo(models.Product, { foreignKey: 'id', as: 'product' })
     }
   }
   ProductImage.init({
@@ -39,6 +38,16 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'image cannot be empty'
         }
       }
+    },
+    is_active: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'is active cannot be empty'
+        }
+      },
+      defaultValue: 0
     }
   }, {
     sequelize,

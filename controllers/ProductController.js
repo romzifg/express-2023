@@ -1,5 +1,5 @@
 const asyncHandler = require('../middleware/asyncHandler')
-const { Product } = require('../models');
+const { Product, ProductImage } = require('../models');
 const { apiResponse } = require('../utils/response');
 const fs = require('fs')
 
@@ -21,7 +21,11 @@ exports.addProduct = asyncHandler(async (req, res) => {
 })
 
 exports.getProducts = asyncHandler(async (req, res) => {
-    const product = await Product.findAll();
+    const product = await Product.findAll({
+        include: [
+            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] }
+        ]
+    });
 
     return apiResponse({
         statusCode: 200,
@@ -31,7 +35,12 @@ exports.getProducts = asyncHandler(async (req, res) => {
 })
 
 exports.getProduct = asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id)
+    const product = await Product.findOne({
+        where: { id: req.params.id },
+        include: [
+            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] }
+        ]
+    })
 
     if (!product) {
         return apiResponse({
@@ -115,7 +124,7 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
 
     return apiResponse({
         statusCode: 200,
-        message: `Success delete category id ${req.params.id}`,
+        message: `Success delete product for id ${req.params.id}`,
         data: null
     }, res)
 })
