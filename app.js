@@ -5,6 +5,7 @@ const AuthRouter = require('./routes/auth');
 const ProductRouter = require('./routes/product');
 const CouponRouter = require('./routes/coupon');
 const ProductStockRouter = require('./routes/productStock');
+const UploadRouter = require('./routes/upload');
 const morgan = require('morgan');
 const cors = require('cors');
 const cookieParse = require('cookie-parser');
@@ -29,6 +30,7 @@ app.use('/api/v1/categories', CategoriesRouter)
 app.use('/api/v1/product', ProductRouter)
 app.use('/api/v1/coupon', CouponRouter)
 app.use('/api/v1/product-stock', ProductStockRouter)
+app.use('/api/v1/upload', UploadRouter)
 
 // Middleware for error
 app.use(notFound)
