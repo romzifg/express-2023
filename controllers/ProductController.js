@@ -1,24 +1,16 @@
 const asyncHandler = require('../middleware/asyncHandler')
 const { Product } = require('../models');
 const { apiResponse } = require('../utils/response');
+const fs = require('fs')
 
 exports.addProduct = asyncHandler(async (req, res) => {
-    const file = req.file;
-    if (!file) {
-        res.status(400)
-        throw new Error('File is empty')
-    }
-
-    const filename = file.filename
-    const pathFile = `${req.protocol}://${req.get('host')}/public/uploads/${filename}`
-
     const newProduct = await Product.create({
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
         categoryId: req.body.categoryId,
         stock: req.body.stock,
-        image: pathFile
+        image: req.body.image
     })
 
     return apiResponse({
@@ -67,12 +59,18 @@ exports.updateProduct = asyncHandler(async (req, res) => {
         }, res)
     }
 
-    const file = req.file;
-    let filename;
-    let pathFile;
-    if (file) {
-        filename = file.filename
-        pathFile = `${req.protocol}://${req.get('host')}/public/uploads/${filename}`
+    if (req.body.image && req.body.image !== null) {
+        const filename = product.image.replace(`${req.protocol}://${req.get('host')}/public/uploads/`, "")
+        const filePath = `./public/uploads/${filename}`
+
+        fs.unlinkSync(filePath, (err) => {
+            if (err) {
+                return apiResponse({
+                    statusCode: 400,
+                    message: "Fail"
+                })
+            }
+        })
     }
 
     const newProduct = await product.update({
@@ -81,7 +79,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
         price: req.body.price,
         categoryId: req.body.categoryId,
         stock: req.body.stock,
-        image: pathFile
+        image: req.body.image === null ? product.image : req.body.image
     })
 
     return apiResponse({
@@ -100,6 +98,18 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
             data: product
         }, res)
     }
+
+    const filename = product.image.replace(`${req.protocol}://${req.get('host')}/public/uploads/`, "")
+    const filePath = `./public/uploads/${filename}`
+
+    fs.unlinkSync(filePath, (err) => {
+        if (err) {
+            return apiResponse({
+                statusCode: 400,
+                message: "Fail"
+            })
+        }
+    })
 
     await product.destroy()
 
