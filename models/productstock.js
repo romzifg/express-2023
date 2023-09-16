@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   ProductStock.init({
     product_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       validate: {
         notNull: {

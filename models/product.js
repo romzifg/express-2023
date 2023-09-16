@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Product.hasOne(models.ProductStock, { foreignKey: 'product_id', as: 'product_stock' })
       Product.hasMany(models.ProductImage, { foreignKey: 'product_id', as: 'product_thumbnail' })
     }
   }
@@ -66,10 +67,6 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'image cannot be empty'
         }
       },
-    },
-    stock: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
     },
     countReview: {
       type: DataTypes.INTEGER,

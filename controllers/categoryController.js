@@ -6,13 +6,13 @@ exports.getAllCategories = async (req, res) => {
     try {
         const categories = await Category.findAll();
 
-        apiResponse({
+        return apiResponse({
             statusCode: 200,
             message: 'Success',
             data: categories,
         }, res)
     } catch (error) {
-        apiResponse({
+        return apiResponse({
             statusCode: 400,
             message: error.message,
         }, res)
@@ -44,14 +44,12 @@ exports.getCategoryById = async (req, res) => {
 }
 
 exports.storeCategory = asyncHandler(async (req, res) => {
-    let { name, description } = req.body
-
     const newCategory = await Category.create(
-        { name, description }
+        { name: req.body.name, description: req.body.description }
     )
 
     return apiResponse({
-        statusCode: 201,
+        statusCode: 200,
         message: 'Success',
         data: newCategory,
     }, res)

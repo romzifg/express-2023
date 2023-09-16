@@ -1,5 +1,5 @@
 const asyncHandler = require('../middleware/asyncHandler')
-const { Product, ProductImage } = require('../models');
+const { Product, ProductImage, ProductStock } = require('../models');
 const { apiResponse } = require('../utils/response');
 const fs = require('fs')
 
@@ -9,7 +9,6 @@ exports.addProduct = asyncHandler(async (req, res) => {
         description: req.body.description,
         price: req.body.price,
         categoryId: req.body.categoryId,
-        stock: req.body.stock,
         image: req.body.image
     })
 
@@ -23,7 +22,8 @@ exports.addProduct = asyncHandler(async (req, res) => {
 exports.getProducts = asyncHandler(async (req, res) => {
     const product = await Product.findAll({
         include: [
-            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] }
+            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] },
+            { model: ProductStock, as: 'product_stock', attributes: ['current_stock', 'old_stock'] }
         ]
     });
 
@@ -38,7 +38,8 @@ exports.getProduct = asyncHandler(async (req, res) => {
     const product = await Product.findOne({
         where: { id: req.params.id },
         include: [
-            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] }
+            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] },
+            { model: ProductStock, as: 'product_stock', attributes: ['current_stock', 'old_stock'] }
         ]
     })
 
@@ -87,7 +88,6 @@ exports.updateProduct = asyncHandler(async (req, res) => {
         description: req.body.description,
         price: req.body.price,
         categoryId: req.body.categoryId,
-        stock: req.body.stock,
         image: req.body.image === null ? product.image : req.body.image
     })
 

@@ -35,10 +35,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      stock: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
-      },
       countReview: {
         type: Sequelize.INTEGER,
         defaultValue: 0
