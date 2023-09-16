@@ -1,6 +1,6 @@
 # REST API Online Shop
 ## Description
-Rest Api for online shop using Express js and database MySQL.
+Rest Api for online shop using Javascript, Express js and database MySQL.
 
 Clone the project
 ```bash
