@@ -19,44 +19,58 @@ exports.addProduct = asyncHandler(async (req, res) => {
     }, res)
 })
 
-exports.getProducts = asyncHandler(async (req, res) => {
-    const product = await Product.findAll({
-        include: [
-            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] },
-            { model: ProductStock, as: 'product_stock', attributes: ['current_stock', 'old_stock'] }
-        ]
-    });
+exports.getProducts = async (req, res) => {
+    try {
+        const product = await Product.findAll({
+            include: [
+                { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
+                { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
+            ]
+        });
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: product
-    }, res)
-})
-
-exports.getProduct = asyncHandler(async (req, res) => {
-    const product = await Product.findOne({
-        where: { id: req.params.id },
-        include: [
-            { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'image_url', 'is_active'] },
-            { model: ProductStock, as: 'product_stock', attributes: ['current_stock', 'old_stock'] }
-        ]
-    })
-
-    if (!product) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: null
+            statusCode: 200,
+            message: 'Success',
+            data: product
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
+}
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: product
-    }, res)
-})
+exports.getProduct = async (req, res) => {
+    try {
+        const product = await Product.findOne({
+            where: { id: req.params.id },
+            include: [
+                { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
+                { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
+            ]
+        })
+
+        if (!product) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: null
+            }, res)
+        }
+
+        return apiResponse({
+            statusCode: 200,
+            message: 'Success',
+            data: product
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
+    }
+}
 
 exports.updateProduct = asyncHandler(async (req, res) => {
     const product = await Product.findByPk(req.params.id)
