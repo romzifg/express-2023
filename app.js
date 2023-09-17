@@ -6,6 +6,7 @@ const ProductRouter = require('./routes/product');
 const ProductStockRouter = require('./routes/productStock');
 const ProductImageRouter = require('./routes/productImage');
 const CouponRouter = require('./routes/coupon');
+const CartRouter = require('./routes/cart');
 const UploadRouter = require('./routes/upload');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -32,6 +33,7 @@ app.use('/api/v1/product', ProductRouter)
 app.use('/api/v1/product-stock', ProductStockRouter)
 app.use('/api/v1/product-image', ProductImageRouter)
 app.use('/api/v1/coupon', CouponRouter)
+app.use('/api/v1/cart', CartRouter)
 app.use('/api/v1/upload', UploadRouter)
 
 // Middleware for error
