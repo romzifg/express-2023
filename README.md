@@ -28,5 +28,10 @@ Env setup
   JWT_COOKIE_EXPIRES_IN= 6
 ```
 
+For migration database
+```bash
+  npx sequelize-cli db:migrate
+```
+
 ## Authors
 - [@romzifg](https://github.com/romzifg)
