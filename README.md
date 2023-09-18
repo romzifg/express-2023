@@ -2,6 +2,11 @@
 ## Description
 Rest Api for online shop using Javascript, Express js and database MySQL.
 
+Make sure you have installed git and node js on your device.
+otherwise, you can download it at
+- [GIT](https://git-scm.com/)
+- [NODE](https://nodejs.org/en)
+
 Clone the project
 ```bash
   git clone https://github.com/romzifg/express-backend.git
