@@ -23,7 +23,6 @@ exports.getCarts = async (req, res) => {
             data: cart
         }, res)
     } catch (error) {
-        console.log(error)
         return apiResponse({
             statusCode: 400,
             message: error.message,

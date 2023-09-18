@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Transaction.hasMany(models.TransactionItem, { foreignKey: 'transaction_id', as: 'items' })
+      Transaction.hasMany(models.TransactionLog, { foreignKey: 'transaction_id', as: 'logs' })
     }
   }
   Transaction.init({

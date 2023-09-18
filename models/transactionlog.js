@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TransactionLog.hasOne(models.Transaction, { foreignKey: "transaction_id", as: 'transaction' })
     }
   }
   TransactionLog.init({
