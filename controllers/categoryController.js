@@ -1,5 +1,4 @@
 const { Category } = require('../models');
-const asyncHandler = require('../middleware/asyncHandler');
 const { apiResponse } = require('../utils/response');
 
 exports.getAllCategories = async (req, res) => {
@@ -43,38 +42,53 @@ exports.getCategoryById = async (req, res) => {
     }
 }
 
-exports.storeCategory = asyncHandler(async (req, res) => {
-    const newCategory = await Category.create(
-        { name: req.body.name, description: req.body.description }
-    )
+exports.storeCategory = async (req, res) => {
+    try {
+        const newCategory = await Category.create(
+            { name: req.body.name, description: req.body.description }
+        )
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: newCategory,
-    }, res)
-})
-
-exports.updateCategory = asyncHandler(async (req, res) => {
-    await Category.update(req.body, {
-        where: { id: req.params.id }
-    })
-
-    const newCtg = await Category.findByPk(req.params.id)
-    if (!newCtg) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: null,
+            statusCode: 200,
+            message: 'Success',
+            data: newCategory,
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
+}
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: newCtg,
-    }, res)
-})
+exports.updateCategory = async (req, res) => {
+    try {
+        await Category.update(req.body, {
+            where: { id: req.params.id }
+        })
+
+        const newCtg = await Category.findByPk(req.params.id)
+        if (!newCtg) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: null,
+            }, res)
+        }
+
+        return apiResponse({
+            statusCode: 200,
+            message: 'Success',
+            data: newCtg,
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
+
+    }
+}
 
 exports.destroyCategory = async (req, res) => {
     try {

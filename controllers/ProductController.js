@@ -1,23 +1,6 @@
-const asyncHandler = require('../middleware/asyncHandler')
 const { Product, ProductImage, ProductStock } = require('../models');
 const { apiResponse } = require('../utils/response');
 const fs = require('fs')
-
-exports.addProduct = asyncHandler(async (req, res) => {
-    const newProduct = await Product.create({
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        categoryId: req.body.categoryId,
-        image: req.body.image
-    })
-
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: newProduct
-    }, res)
-})
 
 exports.getProducts = async (req, res) => {
     try {
@@ -72,18 +55,87 @@ exports.getProduct = async (req, res) => {
     }
 }
 
-exports.updateProduct = asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id)
+exports.addProduct = async (req, res) => {
+    try {
+        const newProduct = await Product.create({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            categoryId: req.body.categoryId,
+            image: req.body.image
+        })
 
-    if (!product) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: null
+            statusCode: 200,
+            message: 'Success',
+            data: newProduct
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
+}
 
-    if (req.body.image && req.body.image !== null) {
+exports.updateProduct = async (req, res) => {
+    try {
+        const product = await Product.findByPk(req.params.id)
+
+        if (!product) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: null
+            }, res)
+        }
+
+        if (req.body.image && req.body.image !== null) {
+            const filename = product.image.replace(`${req.protocol}://${req.get('host')}/public/uploads/`, "")
+            const filePath = `./public/uploads/${filename}`
+
+            fs.unlinkSync(filePath, (err) => {
+                if (err) {
+                    return apiResponse({
+                        statusCode: 400,
+                        message: "Fail"
+                    })
+                }
+            })
+        }
+
+        const newProduct = await product.update({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            categoryId: req.body.categoryId,
+            image: req.body.image === null ? product.image : req.body.image
+        })
+
+        return apiResponse({
+            statusCode: 200,
+            message: 'Success',
+            data: newProduct
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
+    }
+}
+
+exports.deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findByPk(req.params.id)
+        if (!product) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: product
+            }, res)
+        }
+
         const filename = product.image.replace(`${req.protocol}://${req.get('host')}/public/uploads/`, "")
         const filePath = `./public/uploads/${filename}`
 
@@ -95,50 +147,18 @@ exports.updateProduct = asyncHandler(async (req, res) => {
                 })
             }
         })
-    }
 
-    const newProduct = await product.update({
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        categoryId: req.body.categoryId,
-        image: req.body.image === null ? product.image : req.body.image
-    })
+        await product.destroy()
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: newProduct
-    }, res)
-})
-
-exports.deleteProduct = asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id)
-    if (!product) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: product
+            statusCode: 200,
+            message: `Success delete product for id ${req.params.id}`,
+            data: null
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
-
-    const filename = product.image.replace(`${req.protocol}://${req.get('host')}/public/uploads/`, "")
-    const filePath = `./public/uploads/${filename}`
-
-    fs.unlinkSync(filePath, (err) => {
-        if (err) {
-            return apiResponse({
-                statusCode: 400,
-                message: "Fail"
-            })
-        }
-    })
-
-    await product.destroy()
-
-    return apiResponse({
-        statusCode: 200,
-        message: `Success delete product for id ${req.params.id}`,
-        data: null
-    }, res)
-})
+}

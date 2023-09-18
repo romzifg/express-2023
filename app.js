@@ -12,7 +12,6 @@ const morgan = require('morgan');
 const cors = require('cors');
 const cookieParse = require('cookie-parser');
 const path = require('path');
-const { errorHandler, notFound } = require('./middleware/errorMiddleware');
 require('dotenv').config()
 
 // Middleware
@@ -25,7 +24,6 @@ app.use(cors())
 var dir = path.join(__dirname, 'public');
 app.use('/public', express.static(dir));
 
-
 // Routing
 app.use('/api/v1/auth', AuthRouter)
 app.use('/api/v1/categories', CategoriesRouter)
@@ -35,10 +33,6 @@ app.use('/api/v1/product-image', ProductImageRouter)
 app.use('/api/v1/coupon', CouponRouter)
 app.use('/api/v1/cart', CartRouter)
 app.use('/api/v1/upload', UploadRouter)
-
-// Middleware for error
-app.use(notFound)
-app.use(errorHandler)
 
 app.listen(process.env.PORT, () => {
     console.log(`server running in port ${process.env.PORT}`)

@@ -1,5 +1,4 @@
 const { Coupon } = require('../models');
-const asyncHandler = require('../middleware/asyncHandler');
 const { apiResponse } = require('../utils/response');
 
 exports.getAllCoupons = async (req, res) => {
@@ -43,60 +42,81 @@ exports.getCoupon = async (req, res) => {
     }
 }
 
-exports.createCoupon = asyncHandler(async (req, res) => {
-    const coupon = await Coupon.create({
-        name: req.body.name,
-        code: (req.body.code).toUpperCase(),
-        expired_date: req.body.expired_date,
-        disc_value: req.body.disc_value
-    })
+exports.createCoupon = async (req, res) => {
+    try {
+        const coupon = await Coupon.create({
+            name: req.body.name,
+            code: (req.body.code).toUpperCase(),
+            expired_date: req.body.expired_date,
+            disc_value: req.body.disc_value
+        })
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: coupon
-    }, res)
-})
-
-exports.updateCoupon = asyncHandler(async (req, res) => {
-    const coupon = await Coupon.findOne({ where: { id: req.params.id } })
-    if (!coupon) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: null,
+            statusCode: 200,
+            message: 'Success',
+            data: coupon
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
+}
 
-    await coupon.update({
-        name: req.body.name,
-        code: (req.body.code)?.toUpperCase(),
-        expired_date: req.body.expired_date,
-        disc_value: req.body.disc_value
-    })
+exports.updateCoupon = async (req, res) => {
+    try {
+        const coupon = await Coupon.findOne({ where: { id: req.params.id } })
+        if (!coupon) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: null,
+            }, res)
+        }
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: coupon
-    }, res)
-})
+        await coupon.update({
+            name: req.body.name,
+            code: (req.body.code)?.toUpperCase(),
+            expired_date: req.body.expired_date,
+            disc_value: req.body.disc_value
+        })
 
-exports.destroyCoupon = asyncHandler(async (req, res) => {
-    const coupon = await Coupon.findOne({ where: { id: req.params.id } })
-    if (!coupon) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: null,
+            statusCode: 200,
+            message: 'Success',
+            data: coupon
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
+}
 
-    await coupon.destroy()
+exports.destroyCoupon = async (req, res) => {
+    try {
+        const coupon = await Coupon.findOne({ where: { id: req.params.id } })
+        if (!coupon) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: null,
+            }, res)
+        }
 
-    return apiResponse({
-        statusCode: 200,
-        message: `Success delete coupon with id ${req.params.id}`,
-        data: null
-    }, res)
-})
+        await coupon.destroy()
+
+        return apiResponse({
+            statusCode: 200,
+            message: `Success delete coupon with id ${req.params.id}`,
+            data: null
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
+    }
+}

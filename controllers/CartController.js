@@ -1,44 +1,57 @@
-const asyncHandler = require('../middleware/asyncHandler')
 const { Cart, CartItem, Product } = require('../models')
 const { apiResponse } = require('../utils/response')
 
-exports.getCarts = asyncHandler(async (req, res) => {
-    const cart = await Cart.findAll({
-        where: { user_id: req.user.id },
-        include: [
-            { model: CartItem, as: 'items' }
-        ]
-    })
+exports.getCarts = async (req, res) => {
+    try {
+        const cart = await Cart.findAll({
+            where: { user_id: req.user.id },
+            include: [
+                { model: CartItem, as: 'items' }
+            ]
+        })
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: cart
-    }, res)
-})
-
-exports.getCart = asyncHandler(async (req, res) => {
-    const cart = await Cart.findOne({
-        where: { carat_id: req.params.id },
-        include: [
-            { model: CartItem, as: 'items' }
-        ]
-    })
-
-    if (!cart) {
         return apiResponse({
-            statusCode: 404,
-            message: 'Not Found',
-            data: null
+            statusCode: 200,
+            message: 'Success',
+            data: cart
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
         }, res)
     }
+}
 
-    return apiResponse({
-        statusCode: 200,
-        message: 'Success',
-        data: cart
-    }, res)
-})
+exports.getCart = async (req, res) => {
+    try {
+        const cart = await Cart.findOne({
+            where: { carat_id: req.params.id },
+            include: [
+                { model: CartItem, as: 'items' }
+            ]
+        })
+
+        if (!cart) {
+            return apiResponse({
+                statusCode: 404,
+                message: 'Not Found',
+                data: null
+            }, res)
+        }
+
+        return apiResponse({
+            statusCode: 200,
+            message: 'Success',
+            data: cart
+        }, res)
+    } catch (error) {
+        return apiResponse({
+            statusCode: 400,
+            message: error.message,
+        }, res)
+    }
+}
 
 exports.addToCart = async (req, res) => {
     try {
