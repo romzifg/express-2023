@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Transaction.hasMany(models.TransactionItem, { foreignKey: 'transaction_id', as: 'items' })
       Transaction.hasMany(models.TransactionLog, { foreignKey: 'transaction_id', as: 'logs' })
+      Transaction.hasMany(models.Coupon, { foreignKey: 'coupon_id', as: 'coupon' })
     }
   }
   Transaction.init({
@@ -35,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
       allowNull: false,
+    },
+    coupon_id: {
+      type: DataTypes.INTEGER,
     },
     total_amount: {
       type: DataTypes.INTEGER,

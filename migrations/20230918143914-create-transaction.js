@@ -24,6 +24,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
+      coupon_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'coupons',
+          key: 'id'
+        },
+      },
       total_amount: {
         allowNull: false,
         type: Sequelize.DOUBLE,

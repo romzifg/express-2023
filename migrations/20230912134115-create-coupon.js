@@ -27,6 +27,9 @@ module.exports = {
         type: Sequelize.DOUBLE,
         allowNull: false
       },
+      disc_value: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

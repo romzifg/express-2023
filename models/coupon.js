@@ -57,6 +57,9 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'coupon discon value cannot empty'
         }
       }
+    },
+    coupon: {
+      type: DataTypes.STRING
     }
   }, {
     sequelize,

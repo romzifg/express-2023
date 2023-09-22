@@ -111,6 +111,23 @@ exports.checkout = async (req, res) => {
     try {
         let total_amount = 0
         let total_items = 0
+        let couponId;
+        let disc;
+
+        if (req.body.coupon_code !== null) {
+            const coupon = await Coupon.findOne({ where: { code: req.body.coupon_code } })
+
+            if (!coupon) {
+                couponId = 0
+                disc = 0
+            } else {
+                couponId = coupon.id
+                disc = coupon.disc_value
+            }
+        } else {
+            couponId = 0
+            disc = 0
+        }
 
         // Cek cart sebelum update cart item
         const cart = await Cart.findOne({ where: { cart_id: req.params.id } })
@@ -159,7 +176,8 @@ exports.checkout = async (req, res) => {
         const transaction = await Transaction.create({
             user_id: req.user.id,
             total_item: total_items,
-            total_amount,
+            coupon_id: couponId,
+            total_amount: total_amount - (total_amount * disc),
         })
 
         let arrTransaction = []

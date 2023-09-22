@@ -6,6 +6,7 @@ const { authMiddleware } = require('../middleware/UserMiddleware')
 router.get('/', CouponController.getAllCoupons)
 router.get('/:id', authMiddleware, CouponController.getCoupon)
 router.post('/', authMiddleware, CouponController.createCoupon)
+router.post('/check', authMiddleware, CouponController.checkCoupon)
 router.put('/:id', authMiddleware, CouponController.updateCoupon)
 router.delete('/:id', authMiddleware, CouponController.destroyCoupon)
 
