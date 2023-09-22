@@ -52,7 +52,7 @@ exports.createCoupon = async (req, res) => {
         })
 
         return apiResponse({
-            statusCode: 200,
+            statusCode: 201,
             message: 'Success',
             data: coupon
         }, res)

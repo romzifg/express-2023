@@ -1,5 +1,5 @@
 exports.apiResponse = (payload, res) => {
-    if (payload.statusCode === 200) {
+    if (payload.statusCode === 200 || payload.statusCode === 201) {
         return res.status(payload.statusCode).json({
             status: payload.statusCode,
             message: payload.message ?? 'Success',

@@ -13,6 +13,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const cookieParse = require('cookie-parser');
 const path = require('path');
+const helmet = require('helmet');
 require('dotenv').config()
 
 // Middleware
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParse())
 app.use(morgan("dev"))
 app.use(cors())
+app.use(helmet())
 
 var dir = path.join(__dirname, 'public');
 app.use('/public', express.static(dir));
