@@ -8,7 +8,7 @@ const {
 } = require('../models');
 const { apiResponse } = require('../utils/response');
 const NodeCache = require('node-cache');
-const myCache = new NodeCache({ stdTTL: 100 });
+const myCache = new NodeCache({ stdTTL: 100, checkperiod: 300, deleteOnExpire: true });
 
 exports.getCarts = async (req, res) => {
     try {

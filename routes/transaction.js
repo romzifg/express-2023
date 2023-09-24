@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const TransactionController = require('../controllers/TransactionController')
-const { authMiddleware } = require('../middleware/UserMiddleware')
+const TransactionController = require('../controllers/TransactionController');
+const { authMiddleware } = require('../middleware/UserMiddleware');
 
 router.get('/list', authMiddleware, TransactionController.getTransactions)
 router.get('/detail/:id', authMiddleware, TransactionController.getTransaction)

@@ -14,7 +14,15 @@ const cors = require('cors');
 const cookieParse = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
+const { rateLimit } = require('express-rate-limit');
 require('dotenv').config();
+
+const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit: 100,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+})
 
 // Middleware
 app.use(express.json())
@@ -23,6 +31,7 @@ app.use(cookieParse())
 app.use(morgan("dev"))
 app.use(cors())
 app.use(helmet())
+app.use(limiter)
 
 var dir = path.join(__dirname, 'public');
 app.use('/public', express.static(dir));
