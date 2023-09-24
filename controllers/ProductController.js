@@ -7,24 +7,33 @@ exports.getProducts = async (req, res) => {
     try {
         let product;
 
-        if (req.query.search) {
-            product = await Product.findAll({
+        if (req.query.search || req.query.limit || req.query.page) {
+            const pageData = parseInt(req.query.page) || 1
+            const limitData = parseInt(req.query.limit) || 100
+            const offsetData = (pageData - 1) * limitData
+            const searchData = req.query.search || ""
+
+            product = await Product.findAndCountAll({
                 where: {
                     name: {
-                        [Op.like]: `%${req.query.search}%`
+                        [Op.like]: `%${searchData}%`
                     }
                 },
                 include: [
                     { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
                     { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
-                ]
+                ],
+                distinct: true,
+                limit: limitData,
+                offset: offsetData,
             });
         } else {
-            product = await Product.findAll({
+            product = await Product.findAndCountAll({
                 include: [
                     { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
                     { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
-                ]
+                ],
+                distinct: true
             });
         }
 
