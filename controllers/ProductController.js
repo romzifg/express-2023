@@ -1,15 +1,32 @@
 const { Product, ProductImage, ProductStock } = require('../models');
 const { apiResponse } = require('../utils/response');
-const fs = require('fs')
+const fs = require('fs');
+const { Op } = require('sequelize')
 
 exports.getProducts = async (req, res) => {
     try {
-        const product = await Product.findAll({
-            include: [
-                { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
-                { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
-            ]
-        });
+        let product;
+
+        if (req.query.search) {
+            product = await Product.findAll({
+                where: {
+                    name: {
+                        [Op.like]: `%${req.query.search}%`
+                    }
+                },
+                include: [
+                    { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
+                    { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
+                ]
+            });
+        } else {
+            product = await Product.findAll({
+                include: [
+                    { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
+                    { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
+                ]
+            });
+        }
 
         return apiResponse({
             statusCode: 200,
@@ -71,6 +88,7 @@ exports.addProduct = async (req, res) => {
             data: newProduct
         }, res)
     } catch (error) {
+        console.log(error)
         return apiResponse({
             statusCode: 400,
             message: error.message,
