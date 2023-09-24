@@ -14,7 +14,7 @@ const cors = require('cors');
 const cookieParse = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
-require('dotenv').config()
+require('dotenv').config();
 
 // Middleware
 app.use(express.json())

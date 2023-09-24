@@ -1,9 +1,19 @@
 const { Coupon } = require('../models');
 const { apiResponse } = require('../utils/response');
+const NodeCache = require('node-cache');
+const myCache = new NodeCache({ stdTTL: 100 });
 
 exports.getAllCoupons = async (req, res) => {
     try {
-        const coupons = await Coupon.findAll()
+        let coupons;
+
+        if (myCache.has('coupons')) {
+            coupons = JSON.parse(myCache.get('coupons'))
+        } else {
+            coupons = await Coupon.findAll()
+
+            myCache.set('coupons', JSON.stringify(coupon))
+        }
 
         return apiResponse({
             statusCode: 200,

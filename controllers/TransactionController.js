@@ -3,21 +3,31 @@ const {
     Transaction,
     TransactionItem,
     TransactionLog
-} = require('../models')
-const { apiResponse } = require('../utils/response')
+} = require('../models');
+const { apiResponse } = require('../utils/response');
+const NodeCache = require('node-cache');
+const myCache = new NodeCache({ stdTTL: 100 });
 
 exports.getTransactions = async (req, res) => {
     try {
-        const transaction = await Transaction.findAll({
-            include: [
-                {
-                    model: TransactionItem, as: 'items', include: [
-                        { model: Product, as: 'product' }
-                    ]
-                },
-                { model: TransactionLog, as: 'logs' }
-            ]
-        })
+        let transaction;
+
+        if (myCache.has('transactions')) {
+            transaction = JSON.parse(myCache.get('transactions'))
+        } else {
+            transaction = await Transaction.findAll({
+                include: [
+                    {
+                        model: TransactionItem, as: 'items', include: [
+                            { model: Product, as: 'product' }
+                        ]
+                    },
+                    { model: TransactionLog, as: 'logs' }
+                ]
+            })
+
+            myCache.set('products', JSON.stringify(transaction))
+        }
 
         return apiResponse({
             statusCode: 200,

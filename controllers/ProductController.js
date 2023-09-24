@@ -1,7 +1,9 @@
 const { Product, ProductImage, ProductStock } = require('../models');
 const { apiResponse } = require('../utils/response');
 const fs = require('fs');
-const { Op } = require('sequelize')
+const { Op } = require('sequelize');
+const NodeCache = require('node-cache');
+const myCache = new NodeCache({ stdTTL: 100 });
 
 exports.getProducts = async (req, res) => {
     try {
@@ -28,13 +30,19 @@ exports.getProducts = async (req, res) => {
                 offset: offsetData,
             });
         } else {
-            product = await Product.findAndCountAll({
-                include: [
-                    { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
-                    { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
-                ],
-                distinct: true
-            });
+            if (myCache.has('products')) {
+                product = JSON.parse(myCache.get('products'))
+            } else {
+                product = await Product.findAndCountAll({
+                    include: [
+                        { model: ProductImage, as: 'product_thumbnail', attributes: ['id', 'product_id', 'image_url', 'is_active'] },
+                        { model: ProductStock, as: 'product_stock', attributes: ['product_id', 'current_stock', 'old_stock'] }
+                    ],
+                    distinct: true
+                });
+
+                myCache.set('products', JSON.stringify(product))
+            }
         }
 
         return apiResponse({
@@ -43,6 +51,7 @@ exports.getProducts = async (req, res) => {
             data: product
         }, res)
     } catch (error) {
+        console.log(error)
         return apiResponse({
             statusCode: 400,
             message: error.message,

@@ -5,17 +5,27 @@ const {
     Transaction,
     TransactionItem,
     TransactionLog
-} = require('../models')
-const { apiResponse } = require('../utils/response')
+} = require('../models');
+const { apiResponse } = require('../utils/response');
+const NodeCache = require('node-cache');
+const myCache = new NodeCache({ stdTTL: 100 });
 
 exports.getCarts = async (req, res) => {
     try {
-        const cart = await Cart.findAll({
-            where: { user_id: req.user.id },
-            include: [
-                { model: CartItem, as: 'items' }
-            ]
-        })
+        let cart;
+
+        if (myCache.has('carts')) {
+            cart = JSON.parse(myCache.get('carts'))
+        } else {
+            cart = await Cart.findAll({
+                where: { user_id: req.user.id },
+                include: [
+                    { model: CartItem, as: 'items' }
+                ]
+            })
+
+            myCache.set('carts', JSON.stringify(cart))
+        }
 
         return apiResponse({
             statusCode: 200,
