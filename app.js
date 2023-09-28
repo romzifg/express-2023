@@ -8,6 +8,7 @@ const ProductImageRouter = require('./routes/productImage');
 const CouponRouter = require('./routes/coupon');
 const CartRouter = require('./routes/cart');
 const TransactionRouter = require('./routes/transaction');
+const UnitRouter = require('./routes/unit');
 const UploadRouter = require('./routes/upload');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -45,6 +46,7 @@ app.use('/api/v1/product-image', ProductImageRouter)
 app.use('/api/v1/coupon', CouponRouter)
 app.use('/api/v1/cart', CartRouter)
 app.use('/api/v1/transaction', TransactionRouter)
+app.use('/api/v1/unit', UnitRouter)
 app.use('/api/v1/upload', UploadRouter)
 
 app.listen(process.env.PORT, () => {
